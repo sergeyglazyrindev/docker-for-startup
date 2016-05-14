@@ -1,0 +1,58 @@
+---
+- name: Setup user
+  hosts: all
+  gather_facts: False
+
+  tasks:
+    - include: variables.yml
+
+    - name: Install virtualenvwrapper
+      pip: name=virtualenvwrapper
+    - name: Install psycopg2
+      pip: name=psycopg2
+
+    - name: Starting postgres
+      service: name=postgresql state=started
+    - name: Add user to postgres
+      command: psql --command "CREATE USER ritdemo WITH PASSWORD '123456';"
+      become: True
+      become_method: sudo
+      become_user: postgres
+    - name: Add db to postgres
+      command: createdb -O ritdemo ritdemo
+      become: True
+      become_method: sudo
+      become_user: postgres
+    - name: Grant user privilegies
+      command: psql --command "GRANT ALL PRIVILEGES ON DATABASE ritdemo to ritdemo;ALTER USER ritdemo CREATEDB;"
+      become: True
+      become_method: sudo
+      become_user: postgres
+
+    - name: Adding group for app
+      group: name=ritdemo gid={{ gid.stdout }}
+    - name: Adding user for app
+      user: name=ritdemo group=ritdemo uid={{ uid.stdout }} shell=/bin/bash
+    - name: Set gid and uid on /code/ folder in machine
+      file: group=ritdemo owner=ritdemo path=/code/ recurse=yes state=directory
+    - name: Set gid and uid on /bootstrap/ folder in machine
+      file: group=ritdemo owner=ritdemo path=/bootstrap/ recurse=yes state=directory
+
+    - name: Add to bashrc virtualenvwrapper.sh
+      shell: echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc
+      args:
+        executable: /bin/bash
+      become: True
+      become_method: sudo
+      become_user: ritdemo
+
+    - name: Bootstrap user account
+      shell: /bootstrap/bootstrap_user.sh
+      args:
+        executable: /bin/bash
+      become: True
+      become_method: sudo
+      become_user: ritdemo
+
+    - include: update_app.yml
+    - include: start_app.yml

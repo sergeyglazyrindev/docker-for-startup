@@ -1,0 +1,9 @@
+rit:
+  build: .
+  volumes:
+    - ./entrypoint.sh:/entrypoint.sh
+    - ../../:/code/
+    - ./bootstrap/:/bootstrap/
+  cap_add:
+    - NET_ADMIN
+  container_name: rit
