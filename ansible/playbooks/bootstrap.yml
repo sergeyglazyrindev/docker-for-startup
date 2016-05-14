@@ -51,9 +51,9 @@
       shell: gem install sass multi_json compass-import-once chunky_png rb-fsevent rb-inotify ffi autoprefixer-rails execjs compass-core compass bootstrap-sass
       args:
         executable: /bin/bash
-    # - name: Make symbolic link to nginx hosts
-    #   file: src=/bootstrap/nginx/rithosts path=/etc/nginx/sites-enabled/rithosts state=link
-    # - name: Update nginx uwsgi_params
-    #   shell: echo "uwsgi_param SCRIPT_NAME '';" >> /etc/nginx/uwsgi_params
-    #   args:
-    #     executable: /bin/bash
+    - name: Make symbolic link to nginx hosts
+      file: src=/bootstrap/nginx/rithosts path=/etc/nginx/sites-enabled/rithosts state=link
+    - name: Update nginx uwsgi_params
+      shell: echo "uwsgi_param SCRIPT_NAME '';" >> /etc/nginx/uwsgi_params
+      args:
+        executable: /bin/bash

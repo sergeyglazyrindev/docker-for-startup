@@ -7,4 +7,3 @@ cd /code/ritcore/
 python setup.py develop
 cd ../rit/
 python setup.py develop
-
