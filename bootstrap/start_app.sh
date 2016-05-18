@@ -4,9 +4,9 @@ workon rit
 cd /code/rit-homepage/
 
 start_work_on_project.sh &
-RIT_SETTINGS_MODULE='rithomepage.settings' uwsgi uwsgi.ini &
+./rit-admin.py startuwsgi &
 
 cd /code/rit-demo/
 
 start_work_on_project.sh &
-RIT_SETTINGS_MODULE='ritdemo.settings' uwsgi uwsgi.ini &
+./rit-admin.py startuwsgi &
